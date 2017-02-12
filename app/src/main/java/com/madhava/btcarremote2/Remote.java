@@ -38,7 +38,7 @@ public class Remote extends AppCompatActivity {
 
     private String add ,old="";
     private int  leftDown = 3 , center = 6 , rightDown = 4 , forwardDown = 1 , reverseDown = 2 , stop = 5;
-    private int min=10,max=255;
+
 
     private ProgressDialog progress;
     BluetoothAdapter myBluetooth;
@@ -85,8 +85,9 @@ public class Remote extends AppCompatActivity {
         speedSKBR.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                speedTXTVW.setText("Speed "+String.valueOf(i+1));
-                sendCommand(String.valueOf((char)(i+10)));
+                i+=50;
+                speedTXTVW.setText("Speed "+String.valueOf(i));
+                sendCommand(String.valueOf((char)(i)));
             }
 
             @Override
@@ -275,7 +276,7 @@ public class Remote extends AppCompatActivity {
             }else{
                 msg("Connected.");
                 isBTConnected = true;
-                sendCommand(String.valueOf((char)(min)));
+                sendCommand(String.valueOf((char)(50)));
             }
             progress.dismiss();
         }
