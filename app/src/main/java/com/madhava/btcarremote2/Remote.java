@@ -36,8 +36,8 @@ public class Remote extends AppCompatActivity {
     private SeekBar speedSKBR;
     private TextView speedTXTVW;
 
-    private String add;
-    private String  old="", leftDown = "c" , center = "l" , rightDown = "d" , forwardDown = "a" , reverseDown = "b" , stop = "k";
+    private String add ,old="";
+    private int  leftDown = 3 , center = 6 , rightDown = 4 , forwardDown = 1 , reverseDown = 2 , stop = 5;
 
 
     private ProgressDialog progress;
@@ -81,6 +81,24 @@ public class Remote extends AppCompatActivity {
         }
         new ConnectBT().execute();
 
+
+        speedSKBR.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                speedTXTVW.setText("Speed "+String.valueOf(i+1));
+                sendCommand(String.valueOf((char)(i+10)));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         disconBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,11 +124,11 @@ public class Remote extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch(motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        sendCommand(forwardDown);
+                        sendCommand(String.valueOf((char)forwardDown));
                         // PRESSED
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                        sendCommand(stop);
+                        sendCommand(String.valueOf((char)stop));
                         // RELEASED
                         return true; // if you want to handle the touch event
                 }
@@ -123,11 +141,11 @@ public class Remote extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch(motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        sendCommand(reverseDown);
+                        sendCommand(String.valueOf((char)reverseDown));
                         // PRESSED
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                        sendCommand(stop);
+                        sendCommand(String.valueOf((char)stop));
                         // RELEASED
                         return true; // if you want to handle the touch event
                 }
@@ -140,11 +158,11 @@ public class Remote extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch(motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        sendCommand(leftDown);
+                        sendCommand(String.valueOf((char)leftDown));
                         // PRESSED
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                        sendCommand(center);
+                        sendCommand(String.valueOf((char)center));
                         // RELEASED
                         return true; // if you want to handle the touch event
                 }
@@ -157,11 +175,11 @@ public class Remote extends AppCompatActivity {
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch(motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        sendCommand(rightDown);
+                        sendCommand(String.valueOf((char)rightDown));
                         // PRESSED
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                        sendCommand(center);
+                        sendCommand(String.valueOf((char)center));
                         // RELEASED
                         return true; // if you want to handle the touch event
                 }
@@ -210,6 +228,7 @@ public class Remote extends AppCompatActivity {
             return null;
         }
 
+        int i=0;
         void connect(){
             myBluetooth = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice dispositive = myBluetooth.getRemoteDevice(add);
@@ -233,8 +252,11 @@ public class Remote extends AppCompatActivity {
                     ConnectSuccess = true;
                 }catch(Exception ex){
                     ConnectSuccess = false;
-
-                    connect();
+                    i++;
+                    if(i<50) {
+                        connect();
+                    }
+                    i=0;
                 }
             }
         }
